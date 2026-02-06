@@ -4,13 +4,69 @@
   <script type="text/javascript"
       src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js">
   </script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #0f172a; /* slate-900 */
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #e5e7eb;
+    }
+
+    #idle {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background:
+        radial-gradient(circle at top, #1e293b, #020617);
+      transition: opacity 300ms ease;
+      z-index: 1;
+    }
+
+    #idle.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #logo {
+      font-size: 48px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    #subtitle {
+      margin-top: 12px;
+      font-size: 18px;
+      opacity: 0.75;
+    }
+
+    #hint {
+      position: absolute;
+      bottom: 48px;
+      font-size: 14px;
+      opacity: 0.5;
+    }
+  </style>
 </head>
 <body>
+  <div id="idle">
+    <div id="logo">🎧 Audio Receiver</div>
+    <div id="subtitle">Redo att casta</div>
+    <div id="hint">Använd appen för att börja casta</div>
+  </div>
 <cast-media-player/>
 <script>
   const context = cast.framework.CastReceiverContext.getInstance();
   const playerManager = context.getPlayerManager();
   const hearbeatInterval = 15000
+  const idle = document.getElementById('idle');
 
   // Heartbeat
   const NAMESPACE = 'urn:x-cast:com.example.heartbeat';
@@ -22,6 +78,17 @@
       lastHeartbeat = Date.now();
     }
   });
+
+  playerManager.addEventListener(
+    cast.framework.events.EventType.PLAYER_STATE_CHANGED,
+    event => {
+      if (event.state === cast.framework.messages.PlayerState.PLAYING) {
+        idle.classList.add('hidden');
+      } else if (event.state === cast.framework.messages.PlayerState.IDLE) {
+        idle.classList.remove('hidden');
+      }
+    }
+  );
 
   setInterval(() => {
     if (Date.now() - lastHeartbeat > hearbeatInterval * 3) {
