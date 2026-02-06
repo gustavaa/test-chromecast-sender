@@ -28,8 +28,23 @@
       transition: opacity 300ms ease;
       z-index: 1;
     }
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #FFF;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      box-sizing: border-box;
+      animation: rotation 1s linear infinite;
+    }
 
     #idle.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+  
+    #subtitle.hidden {
       opacity: 0;
       pointer-events: none;
     }
@@ -55,9 +70,10 @@
   </style>
 </head>
 <body>
-  <div id="idle" class="hidden">
+  <div id="idle">
     <div id="logo">Audio Receiver</div>
     <div id="subtitle">Redo att casta</div>
+    <span id="spinner"></span>
   </div>
 <cast-media-player/>
 <script>
@@ -65,10 +81,22 @@
   const playerManager = context.getPlayerManager();
   const hearbeatInterval = 15000
   const idle = document.getElementById('idle');
+  const subtitle = document.getElementById('subtitle');
+  const spinner = document.getElementById('spinner');
 
   // Heartbeat
   const NAMESPACE = 'urn:x-cast:com.example.heartbeat';
   let lastHeartbeat = Date.now();
+
+  function setLoading(loading) {
+    if (loading) {
+      subtitle.classList.add('hidden');
+      spinner.classList.add('spinner');
+    } else {
+      subtitle.classList.remove('hidden');
+      spinner.classList.remove('spinner');
+    }
+  }
 
   context.addCustomMessageListener(NAMESPACE, event => {
     if (event.data?.type === 'heartbeat') {
@@ -78,8 +106,13 @@
   });
 
   context.addEventListener(
-    cast.framework.events.EventType.SENDER_CONNECTED,
-    () => idle.classList.remove('hidden')
+    cast.framework.events.EventType.PLAYER_LOADING,
+    () => setLoading(true)
+  );
+
+  context.addEventListener(
+    cast.framework.events.EventType.PLAYER_LOAD_COMPLETE,
+    () => setLoading(false)
   );
 
   playerManager.addEventListener(
