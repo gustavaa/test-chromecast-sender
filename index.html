@@ -6,7 +6,7 @@
   </script>
 </head>
 <body>
-  <cast-media-player></cast-media-player>
+<cast-media-player/>
 <script>
   const context = cast.framework.CastReceiverContext.getInstance();
   const playerManager = context.getPlayerManager();
@@ -26,7 +26,6 @@
     if (Date.now() - lastHeartbeat > hearbeatInterval * 3) {
       console.log('Heartbeat lost, stopping');
       playerManager.stop();
-      context.stop();
     }
   }, hearbeatInterval);
 
