@@ -110,7 +110,7 @@
   Object.values(playerEvents).forEach(eventType => {
     try {
       playerManager.addEventListener(eventType, event => {
-        log(`Player event: ${eventType}`, {
+        console.log(`Player event: ${eventType}`, {
           event,
           state: playerManager.getPlayerState(),
           media: playerManager.getMediaInformation()
