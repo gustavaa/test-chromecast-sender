@@ -7,8 +7,30 @@
 </head>
 <body>
   <cast-media-player></cast-media-player>
-  <script>
-    cast.framework.CastReceiverContext.getInstance().start();
-  </script>
+<script>
+  const context = cast.framework.CastReceiverContext.getInstance();
+  const playerManager = context.getPlayerManager();
+  const val hearbeatInterval = 15000
+
+  // Heartbeat
+  const NAMESPACE = 'urn:x-cast:com.example.heartbeat';
+  let lastHeartbeat = Date.now();
+
+  context.addCustomMessageListener(NAMESPACE, event => {
+    if (event.data?.type === 'heartbeat') {
+      lastHeartbeat = Date.now();
+    }
+  });
+
+  setInterval(() => {
+    if (Date.now() - lastHeartbeat > hearbeatInterval * 3) {
+      console.log('Heartbeat lost, stopping');
+      playerManager.stop();
+      context.stop();
+    }
+  }, hearbeatInterval);
+
+  context.start();
+</script>
 </body>
 </html>
