@@ -18,6 +18,7 @@
 
   context.addCustomMessageListener(NAMESPACE, event => {
     if (event.data?.type === 'heartbeat') {
+      console.log('Received hearbeat');
       lastHeartbeat = Date.now();
     }
   });
