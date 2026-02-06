@@ -80,12 +80,13 @@
   });
 
   playerManager.addEventListener(
-    cast.framework.events.EventType.PLAYER_STATE_CHANGED,
+    cast.framework.events.EventType.MEDIA_STATUS,
     event => {
-      if (event.state === cast.framework.messages.PlayerState.PLAYING) {
-        idle.classList.add('hidden');
-      } else if (event.state === cast.framework.messages.PlayerState.IDLE) {
+      const state = playerManager.getPlayerState();
+      if (state === cast.framework.messages.PlayerState.IDLE) {
         idle.classList.remove('hidden');
+      } else {
+        idle.classList.add('hidden');
       }
     }
   );
