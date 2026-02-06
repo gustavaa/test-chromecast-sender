@@ -30,6 +30,17 @@
       z-index: 1;
     }
 
+    #connecting {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      z-index: 2;
+    }
+
     #idle.hidden {
       opacity: 0;
       pointer-events: none;
@@ -57,9 +68,13 @@
 </head>
 <body>
   <div id="idle">
-    <div id="logo">🎧 Audio Receiver</div>
+    <div id="logo">Audio Receiver</div>
     <div id="subtitle">Redo att casta</div>
-    <div id="hint">Använd appen för att börja casta</div>
+  </div>
+  
+  <div id="connecting" class="hidden">
+    <div id="spinner"></div>
+    <div class="text">Ansluter…</div>
   </div>
 <cast-media-player/>
 <script>
@@ -67,6 +82,7 @@
   const playerManager = context.getPlayerManager();
   const hearbeatInterval = 15000
   const idle = document.getElementById('idle');
+  let showConnecting = false;
 
   // Heartbeat
   const NAMESPACE = 'urn:x-cast:com.example.heartbeat';
@@ -89,6 +105,16 @@
         idle.classList.add('hidden');
       }
     }
+  );
+
+  context.addEventListener(
+    cast.framework.events.EventType.SENDER_CONNECTED,
+    () => connecting.classList.remove('hidden')
+  );
+  
+  playerManager.addEventListener(
+    cast.framework.events.EventType.MEDIA_STATUS,
+    () => connecting.classList.add('hidden')
   );
 
   setInterval(() => {
