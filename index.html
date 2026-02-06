@@ -39,6 +39,15 @@
       animation: rotation 1s linear infinite;
     }
 
+    @keyframes rotation {
+      0% {
+          transform: rotate(0deg);
+      }
+      100% {
+          transform: rotate(360deg);
+      }
+    }
+
     #idle.hidden {
       opacity: 0;
       pointer-events: none;
@@ -46,6 +55,7 @@
   
     #subtitle.hidden {
       opacity: 0;
+      height: 0;
       pointer-events: none;
     }
 
@@ -56,6 +66,7 @@
     }
 
     #subtitle {
+      height: 48px;
       margin-top: 22px;
       font-size: 22px;
       opacity: 0.75;
