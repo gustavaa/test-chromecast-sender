@@ -127,6 +127,22 @@
   );
 
   playerManager.addEventListener(
+  cast.framework.events.EventType.MEDIA_STATUS,
+  event => {
+    const media = playerManager.getMediaInformation();
+
+    if (!media) {
+      console.log('[CAF] MEDIA_STATUS but no media info yet');
+      return;
+    }
+
+    console.log('[CAF] Media info:', media);
+    console.log('[CAF] Metadata:', media.metadata);
+    console.log('[CAF] Player state:', playerManager.getPlayerState());
+  }
+);
+
+  playerManager.addEventListener(
     cast.framework.events.EventType.MEDIA_STATUS,
     event => {
       const state = playerManager.getPlayerState();
