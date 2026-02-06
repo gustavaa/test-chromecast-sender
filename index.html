@@ -105,28 +105,12 @@
     }
   });
 
-  const playerEvents = cast.framework.events.EventType;
-
-  Object.values(playerEvents).forEach(eventType => {
-    try {
-      playerManager.addEventListener(eventType, event => {
-        console.log(`Player event: ${eventType}`, {
-          event,
-          state: playerManager.getPlayerState(),
-          media: playerManager.getMediaInformation()
-        });
-      });
-    } catch (e) {
-
-    }
-  });
-
-  context.addEventListener(
+  playerManager.addEventListener(
     cast.framework.events.EventType.PLAYER_LOADING,
     () => setLoading(true)
   );
 
-  context.addEventListener(
+  playerManager.addEventListener(
     cast.framework.events.EventType.PLAYER_LOAD_COMPLETE,
     () => setLoading(false)
   );
