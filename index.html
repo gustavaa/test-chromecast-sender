@@ -24,21 +24,9 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      background:
-        radial-gradient(circle at top, #1e293b, #020617);
+      background: #F86400;
       transition: opacity 300ms ease;
       z-index: 1;
-    }
-
-    #connecting {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, #1e293b, #020617);
-      z-index: 2;
     }
 
     #idle.hidden {
@@ -47,14 +35,14 @@
     }
 
     #logo {
-      font-size: 48px;
+      font-size: 72px;
       font-weight: 600;
       letter-spacing: -0.02em;
     }
 
     #subtitle {
-      margin-top: 12px;
-      font-size: 18px;
+      margin-top: 22px;
+      font-size: 22px;
       opacity: 0.75;
     }
 
@@ -71,18 +59,12 @@
     <div id="logo">Audio Receiver</div>
     <div id="subtitle">Redo att casta</div>
   </div>
-  
-  <div id="connecting" class="hidden">
-    <div id="spinner"></div>
-    <div class="text">Ansluter…</div>
-  </div>
 <cast-media-player/>
 <script>
   const context = cast.framework.CastReceiverContext.getInstance();
   const playerManager = context.getPlayerManager();
   const hearbeatInterval = 15000
   const idle = document.getElementById('idle');
-  let showConnecting = false;
 
   // Heartbeat
   const NAMESPACE = 'urn:x-cast:com.example.heartbeat';
@@ -95,6 +77,11 @@
     }
   });
 
+  context.addEventListener(
+    cast.framework.events.EventType.SENDER_CONNECTED,
+    () => idle.classList.remove('hidden')
+  );
+
   playerManager.addEventListener(
     cast.framework.events.EventType.MEDIA_STATUS,
     event => {
@@ -105,16 +92,6 @@
         idle.classList.add('hidden');
       }
     }
-  );
-
-  context.addEventListener(
-    cast.framework.events.EventType.SENDER_CONNECTED,
-    () => connecting.classList.remove('hidden')
-  );
-  
-  playerManager.addEventListener(
-    cast.framework.events.EventType.MEDIA_STATUS,
-    () => connecting.classList.add('hidden')
   );
 
   setInterval(() => {
